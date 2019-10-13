@@ -45,13 +45,13 @@ app.get('/', function (req, res) {
 /**
  * Setup sensors
  */
-const frontDistance = 0;
+let frontDistance = 0;
 const $distanceFront = createStream({
   triggerGPIO: 26,
   echoGPIO: 19
 });
 
-const rearDistance = 0;
+let rearDistance = 0;
 const $distanceRear = createStream({
   triggerGPIO: 17,
   echoGPIO: 27,
@@ -78,10 +78,12 @@ io.on('connection', function (socket) {
   logger.info('User connected!');
 
   $distanceFront.pipe(throttleTime(500)).subscribe((value) => {
+    frontDistance = value;
     socket.emit('distance_front', value);
   });
 
   $distanceRear.pipe(throttleTime(500)).subscribe((value) => {
+    rearDistance = value;
     socket.emit('distance_rear', value);
   });
 
