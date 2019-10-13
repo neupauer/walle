@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "dependencies": {
+    "express": "^4.17.1",
+    "rxjs": "^6.5.3",
+    "socket.io": "^2.3.0",
+    "winston": "^3.2.1"
+  }
+}
