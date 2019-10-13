@@ -6,6 +6,7 @@ const { combine, timestamp, printf } = format;
 const { throttleTime } = require('rxjs/operators');
 const { createStream } = require('./src/hcsr04');
 const { createRotationStream } = require('./src/mpu6050');
+const { initMotor, initCar } = require('./src/dc_motor');
 /**
  * Constants
  */
@@ -42,19 +43,30 @@ app.get('/', function (req, res) {
 });
 
 /**
- * Setup streams
+ * Setup sensors
  */
+const frontDistance = 0;
 const $distanceFront = createStream({
   triggerGPIO: 26,
   echoGPIO: 19
 });
 
+const rearDistance = 0;
 const $distanceRear = createStream({
   triggerGPIO: 17,
   echoGPIO: 27,
 });
 
 const $rotation = createRotationStream();
+
+/**
+ * Setup car
+ */
+
+const motorLeft = initMotor(24, 23, 25);
+const motorRight = initMotor(21, 20, 16);
+
+const car = initCar(motorLeft, motorRight);
 
 /**
  * Setup Socket.IO
@@ -77,9 +89,35 @@ io.on('connection', function (socket) {
     socket.emit('rotation', value);
   });
 
-  // socket.emit('news', { hello: 'world' });
   socket.on('control', function (data) {
     logger.debug(`Control: ${data}`);
+
+    switch (data) {
+      case "UP":
+        if (frontDistance > 10) {
+          car.forward();
+        } else {
+          car.stop();
+        }
+        break;
+      case "DOWN":
+        if (rearDistance > 10) {
+          car.backward();
+        } else {
+          car.stop();
+        }
+        break;
+      case "LEFT":
+        car.left();
+        break;
+      case "RIGHT":
+        car.right();
+        break;
+      case "STOP":
+      default:
+        car.stop();
+        break;
+    }
   });
 
   socket.on('disconnect', function () {
