@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
 
+import _throttle from 'lodash/throttle'
 import Icon from "./Icon";
 import Text from "./Components/Text";
 import { socket } from "./SocketContext";
 import ControlButton from "./Components/ControlButton";
 import useKeyPress from "./utils/useKeyPress";
+
+const emitControl = (direction) => {
+  socket.emit("control", direction);
+}
+
+const throttledEmitControl = _throttle(emitControl, 500);
 
 const App = () => {
   const arrowUp = useKeyPress("ArrowUp");
@@ -20,26 +27,29 @@ const App = () => {
 
   useEffect(() => {
     socket.on("rotation", msg => {
-      setXAngle(msg.x);
-      setYAngle(msg.y);
+      setXAngle((msg.x - 2.5));
+      setYAngle((msg.y - 6));
     });
 
-    socket.on("distance", msg => {
-      setFrontDistance(msg.front);
-      setRearDistance(msg.rear);
+    socket.on("distance_front", msg => {
+      setFrontDistance(msg);
+    });
+
+    socket.on("distance_rear", msg => {
+      setRearDistance(msg);
     });
   }, []);
 
   if (arrowRight) {
-    socket.emit("control", "RIGHT");
+    throttledEmitControl('RIGHT')
   } else if (arrowLeft) {
-    socket.emit("control", "LEFT");
+    throttledEmitControl('LEFT')
   } else if (arrowUp) {
-    socket.emit("control", "UP");
+    throttledEmitControl('UP')
   } else if (arrowDown) {
-    socket.emit("control", "DOWN");
+    throttledEmitControl("DOWN")
   } else {
-    socket.emit("control", "STOP");
+    throttledEmitControl("STOP")
   }
 
   return (
@@ -83,7 +93,7 @@ const App = () => {
                 <Text category="c1">Roll</Text>
                 <Icon.Car
                   className="text-gray-600 h-24 w-24 my-2"
-                  style={{ transform: `rotate(${xAngle}deg) scale(0.75)` }}
+                  style={{ transform: `rotate(${-xAngle}deg) scale(0.75)` }}
                 />
                 <Text
                   category="s2"
@@ -98,7 +108,7 @@ const App = () => {
                 <Text category="c1">Pitch</Text>
                 <Icon.Car2
                   className="text-gray-600 h-24 w-24 my-2"
-                  style={{ transform: `rotate(${yAngle}deg)` }}
+                  style={{ transform: `rotate(${-yAngle}deg)` }}
                   strokeWidth={0.75}
                 />
                 <Text

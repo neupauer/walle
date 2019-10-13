@@ -2,6 +2,9 @@
   "private": true,
   "dependencies": {
     "express": "^4.17.1",
+    "i2c-bus": "^5.1.0",
+    "i2c-mpu6050": "^2.3.0",
+    "pigpio": "^2.0.1",
     "rxjs": "^6.5.3",
     "socket.io": "^2.3.0",
     "winston": "^3.2.1"

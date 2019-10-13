@@ -3,9 +3,8 @@ const http = require('http');
 const express = require('express');
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf } = format;
-const rxjs = require('rxjs');
-const operators = require('rxjs/operators');
-const { createStream: createDistanceStream } = require('./src/hcsr04');
+const { throttleTime } = require('rxjs/operators');
+const { createStream } = require('./src/hcsr04');
 const { createRotationStream } = require('./src/mpu6050');
 /**
  * Constants
@@ -22,6 +21,7 @@ const logFormat = printf(({ level, message, label, timestamp }) => {
 
 const logger = createLogger({
   level: 'debug',
+  // level: 'info',
   format: combine(
     timestamp(),
     logFormat
@@ -42,11 +42,16 @@ app.get('/', function (req, res) {
 });
 
 /**
- * createDistanceStream
+ * Setup streams
  */
-const $distance = createDistanceStream({
-  triggerGPIO: 27,
-  echoGPIO: 17
+const $distanceFront = createStream({
+  triggerGPIO: 26,
+  echoGPIO: 19
+});
+
+const $distanceRear = createStream({
+  triggerGPIO: 17,
+  echoGPIO: 27,
 });
 
 const $rotation = createRotationStream();
@@ -60,11 +65,15 @@ const io = require('socket.io')(server);
 io.on('connection', function (socket) {
   logger.info('User connected!');
 
-  $distance.subscribe((value) => {
-    socket.emit('distance', value);
+  $distanceFront.pipe(throttleTime(500)).subscribe((value) => {
+    socket.emit('distance_front', value);
   });
 
-  $rotation.subscribe((value) => {
+  $distanceRear.pipe(throttleTime(500)).subscribe((value) => {
+    socket.emit('distance_rear', value);
+  });
+
+  $rotation.pipe(throttleTime(500)).subscribe((value) => {
     socket.emit('rotation', value);
   });
 
