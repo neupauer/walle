@@ -91,10 +91,10 @@ io.on('connection', function (socket) {
 
   $distanceFront.pipe(throttleTime(0)).subscribe((value) => {
     frontDistance = value;
-    if (value < 20 && !forceStopFront) {
+    if (value <= 30 && !forceStopFront) {
       car.stop();
       forceStopFront = true;
-    } else if (value > 20 && forceStopFront) {
+    } else if (value > 30 && forceStopFront) {
       forceStopFront = false;
     }
 
@@ -103,10 +103,10 @@ io.on('connection', function (socket) {
 
   $distanceRear.pipe(throttleTime(0)).subscribe((value) => {
     rearDistance = value;
-    if (value < 20 && !forceStopRear) {
+    if (value <= 30 && !forceStopRear) {
       car.stop();
       forceStopRear = true;
-    } else if (value > 20 && forceStopRear) {
+    } else if (value > 30 && forceStopRear) {
       forceStopRear = false;
     }
     throttledEmmitDistance('distance_rear', value);
