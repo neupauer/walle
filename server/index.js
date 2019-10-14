@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const _throttle = require('lodash/throttle');
 const _mean = require('lodash/mean');
+const _sum = require('lodash/sum');
 const { throttleTime, bufferCount, map, tap } = require('rxjs/operators');
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf } = format;
@@ -107,20 +108,20 @@ io.on('connection', function (socket) {
     throttledEmmitDistance('distance_front', value);
   });
 
-  $distanceRear.pipe(
-    bufferCount(4),
-    map((values) => _mean(values))
-  ).subscribe((value) => {
-    rearDistance = value;
-    if (value <= 30 && !forceStopRear) {
-      car.stop();
-      logger.debug(`R D: ${value}`);
-      forceStopRear = true;
-    } else if (value > 40 && forceStopRear) {
-      forceStopRear = false;
-    }
-    throttledEmmitDistance('distance_rear', value);
-  });
+  // $distanceRear.pipe(
+  //   bufferCount(4),
+  //   map((values) => _sum(values))
+  // ).subscribe((value) => {
+  //   rearDistance = value;
+  //   if (value <= 30 && !forceStopRear) {
+  //     car.stop();
+  //     logger.debug(`R D: ${value}`);
+  //     forceStopRear = true;
+  //   } else if (value > 40 && forceStopRear) {
+  //     forceStopRear = false;
+  //   }
+  //   throttledEmmitDistance('distance_rear', value);
+  // });
 
   $rotation.pipe(throttleTime(500)).subscribe((value) => {
     socket.emit('rotation', value);
