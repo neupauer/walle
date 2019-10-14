@@ -94,7 +94,7 @@ io.on('connection', function (socket) {
     if (value <= 30 && !forceStopFront) {
       car.stop();
       forceStopFront = true;
-    } else if (value > 30 && forceStopFront) {
+    } else if (value > 40 && forceStopFront) {
       forceStopFront = false;
     }
 
@@ -106,7 +106,7 @@ io.on('connection', function (socket) {
     if (value <= 30 && !forceStopRear) {
       car.stop();
       forceStopRear = true;
-    } else if (value > 30 && forceStopRear) {
+    } else if (value > 40 && forceStopRear) {
       forceStopRear = false;
     }
     throttledEmmitDistance('distance_rear', value);
@@ -121,12 +121,12 @@ io.on('connection', function (socket) {
 
     switch (data) {
       case "UP":
-        if (frontDistance > 30) {
+        if (!forceStopFront) {
           car.forward();
         }
         break;
       case "DOWN":
-        if (rearDistance > 30) {
+        if (!forceStopRear) {
           car.backward();
         }
         break;
