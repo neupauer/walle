@@ -91,7 +91,7 @@ io.on('connection', function (socket) {
       car.stop();
     }
 
-    _throttle(emitDistance, 200)('distance_front', value);
+    _throttle(emitDistance, 500)('distance_front', value);
   });
 
   $distanceRear.pipe(throttleTime(0)).subscribe((value) => {
@@ -100,7 +100,7 @@ io.on('connection', function (socket) {
       car.stop();
     }
 
-    _throttle(emitDistance, 200)('distance_rear', value);
+    _throttle(emitDistance, 500)('distance_rear', value);
   });
 
   $rotation.pipe(throttleTime(500)).subscribe((value) => {
