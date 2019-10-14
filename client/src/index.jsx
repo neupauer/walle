@@ -142,7 +142,7 @@ const App = () => {
                     className={`${
                       rearDistance < 30 ? "text-red-500" : "text-indigo-500"
                     } font-mono font-bold w-32 text-center`}
-                    sttle={{ "text-align": "center" }}
+                    style={{ "text-align": "center" }}
                   >
                     {rearDistance.toFixed(2)}
                     <span className="text-sm font-normal">cm</span>
@@ -156,7 +156,7 @@ const App = () => {
                     className={`${
                       frontDistance < 30 ? "text-red-500" : "text-indigo-500"
                     } font-mono font-bold w-32 text-center`}
-                    sttle={{ "text-align": "center" }}
+                    style={{ "text-align": "center" }}
                   >
                     {frontDistance.toFixed(2)}
                     <span className="text-sm font-normal">cm</span>
