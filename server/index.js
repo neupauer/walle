@@ -79,31 +79,37 @@ io.on('connection', function (socket) {
 
   $distanceFront.pipe(throttleTime(500)).subscribe((value) => {
     frontDistance = value;
+    if(value <= 20) {
+    	car.stop();
+    }
     socket.emit('distance_front', value);
   });
 
   $distanceRear.pipe(throttleTime(500)).subscribe((value) => {
     rearDistance = value;
+    if(value <= 20) {
+        car.stop();
+    }
     socket.emit('distance_rear', value);
   });
 
-  $rotation.pipe(throttleTime(500)).subscribe((value) => {
-    socket.emit('rotation', value);
-  });
+//$rotation.pipe(throttleTime(500)).subscribe((value) => {
+  //  socket.emit('rotation', value);
+  //});
 
   socket.on('control', function (data) {
     logger.debug(`Control: ${data}`);
 
     switch (data) {
       case "UP":
-        if (frontDistance > 10) {
+        if (frontDistance > 20) {
           car.forward();
         } else {
           car.stop();
         }
         break;
       case "DOWN":
-        if (rearDistance > 10) {
+        if (rearDistance > 20) {
           car.backward();
         } else {
           car.stop();

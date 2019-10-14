@@ -3,7 +3,7 @@ const mpu6050 = require('i2c-mpu6050');
 
 const rxjs = require('rxjs');
 const operators = require('rxjs/operators');
-const { defer, interval, bindNodeCallback, asyncScheduler } = rxjs;
+const { defer, interval, bindNodeCallback } = rxjs;
 const { share, switchMap } = operators;
 
 const MPU6050_ADDR = 0x68;
@@ -23,7 +23,7 @@ const createTempStream = ({
   readInterval = 100
 } = {}) => {
   return interval(readInterval).pipe(
-    switchMap(() => bindNodeCallback(sensor.readTemp, null, asyncScheduler).call(sensor)),
+    switchMap(() => bindNodeCallback(sensor.readTemp).call(sensor)),
     share()
   );
 }
@@ -40,7 +40,7 @@ const createRotationStream = ({
   readInterval = 100
 } = {}) => {
   return interval(readInterval).pipe(
-    switchMap(() => bindNodeCallback(sensor.readRotation, null, asyncScheduler).call(sensor)),
+    switchMap(() => bindNodeCallback(sensor.readRotation).call(sensor)),
     share()
   );
 }
@@ -62,7 +62,7 @@ const createGyroStream = ({
     sensor.calibrateGyro(calibrateGyro)
   }
   return interval(readInterval).pipe(
-    switchMap(() => bindNodeCallback(sensor.readGyro, null, asyncScheduler).call(sensor)),
+    switchMap(() => bindNodeCallback(sensor.readGyro).call(sensor)),
     share()
   );
 })
@@ -84,7 +84,7 @@ const createAccelStream = ({
     sensor.calibrateAccel(calibrateAccel)
   }
   return interval(readInterval).pipe(
-    switchMap(() => bindNodeCallback(sensor.readAccel, null, asyncScheduler).call(sensor)),
+    switchMap(() => bindNodeCallback(sensor.readAccel).call(sensor)),
     share()
   );
 })
