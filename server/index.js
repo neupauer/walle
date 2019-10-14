@@ -70,7 +70,7 @@ const $rotation = createRotationStream();
 const motorLeft = initMotor(24, 23, 25);
 const motorRight = initMotor(21, 20, 16);
 
-const car = initCar(motorLeft, motorRight);
+const car = initCar(motorLeft, motorRight, logger);
 
 let forceStopFront = false;
 let forceStopRear = false;
@@ -117,7 +117,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('control', function (data) {
-    logger.debug(`Control: ${data}`);
+    // logger.debug(`Control: ${data}`);
 
     switch (data) {
       case "UP":

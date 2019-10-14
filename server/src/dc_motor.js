@@ -27,27 +27,32 @@ const initMotor = (pinInput1, pinInput2, pinEnable) => {
   })
 }
 
-const initCar = (motorLeft, motorRight) => {
+const initCar = (motorLeft, motorRight, logger) => {
   return ({
     forward: () => {
       motorLeft.forward();
       motorRight.forward();
+      logger.debug('Car: forward')
     },
     left: () => {
       motorLeft.backward();
       motorRight.forward();
+      logger.debug('Car: left')
     },
     right: () => {
       motorLeft.forward();
       motorRight.backward();
+      logger.debug('Car: right')
     },
     backward: () => {
       motorLeft.backward();
       motorRight.backward();
+      logger.debug('Car: backward')
     },
     stop: () => {
       motorLeft.stop();
       motorRight.stop();
+      logger.debug('Car: stop')
     },
     unexport: () => {
       motorLeft.unexport()
