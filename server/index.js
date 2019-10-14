@@ -70,7 +70,7 @@ const $rotation = createRotationStream();
 const motorLeft = initMotor(24, 23, 25);
 const motorRight = initMotor(21, 20, 16);
 
-const car = initCar(motorLeft, motorRight, logger);
+const car = initCar(motorLeft, motorRight, { debug: () => { } });
 
 let forceStopFront = false;
 let forceStopRear = false;
@@ -93,6 +93,7 @@ io.on('connection', function (socket) {
     frontDistance = value;
     if (value <= 30 && !forceStopFront) {
       car.stop();
+      logger.debug(`F D: ${value}`);
       forceStopFront = true;
     } else if (value > 40 && forceStopFront) {
       forceStopFront = false;
@@ -105,6 +106,7 @@ io.on('connection', function (socket) {
     rearDistance = value;
     if (value <= 30 && !forceStopRear) {
       car.stop();
+      logger.debug(`R D: ${value}`);
       forceStopRear = true;
     } else if (value > 40 && forceStopRear) {
       forceStopRear = false;
@@ -138,7 +140,7 @@ io.on('connection', function (socket) {
         break;
       case "STOP":
       default:
-        car.stop();
+        // car.stop();
         break;
     }
   });
