@@ -92,8 +92,8 @@ io.on('connection', function (socket) {
 
   $distanceFront.pipe(
     bufferCount(4),
-    tap((v) => logger.debug(v)),
-    // map((values) => _mean(values))
+    tap((v) => logger.debug(Array.from(v))),
+    map((values) => _mean(Array.from(values)))
     // tap(logger.debug),
   ).subscribe(([value, ...rest]) => {
     frontDistance = value;
