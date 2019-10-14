@@ -86,7 +86,7 @@ io.on('connection', function (socket) {
   const emitDistance = (direction, distance) => {
     socket.emit(direction, distance);
   };
-  const throttledEmmitDistance = _throttle(emitDistance, 500);
+  const throttledEmmitDistance = _throttle(emitDistance, 300);
 
   logger.info('User connected!');
 
@@ -119,9 +119,9 @@ io.on('connection', function (socket) {
     throttledEmmitDistance('distance_rear', value);
   });
 
-  $rotation.pipe(throttleTime(500)).subscribe((value) => {
-    socket.emit('rotation', value);
-  });
+  // $rotation.pipe(throttleTime(500)).subscribe((value) => {
+  //   socket.emit('rotation', value);
+  // });
 
   socket.on('control', function (data) {
     // logger.debug(`Control: ${data}`);
