@@ -72,6 +72,9 @@ const motorRight = initMotor(21, 20, 16);
 
 const car = initCar(motorLeft, motorRight);
 
+let forceStopFront = false;
+let forceStopRear = false;
+
 /**
  * Setup Socket.IO
  */
@@ -88,16 +91,23 @@ io.on('connection', function (socket) {
 
   $distanceFront.pipe(throttleTime(0)).subscribe((value) => {
     frontDistance = value;
-    if (value < 20) {
+    if (value < 20 && !forceStopFront) {
       car.stop();
+      forceStopFront = true;
+    } else if (value > 20 && forceStopFront) {
+      forceStopFront = false;
     }
+
     throttledEmmitDistance('distance_front', value);
   });
 
   $distanceRear.pipe(throttleTime(0)).subscribe((value) => {
     rearDistance = value;
-    if (value < 20) {
+    if (value < 20 && !forceStopRear) {
       car.stop();
+      forceStopRear = true;
+    } else if (value > 20 && forceStopRear) {
+      forceStopRear = false;
     }
     throttledEmmitDistance('distance_rear', value);
   });
