@@ -93,19 +93,21 @@ io.on('connection', function (socket) {
 
   $distanceFront.pipe(
     bufferCount(4),
-    map((values) => _sum(values))
+    map(_sum)
     // tap(logger.debug),
-  ).subscribe(([value, ...rest]) => {
-    frontDistance = value;
-    if (value <= 30 && !forceStopFront) {
-      car.stop();
-      logger.debug(`F D: ${value}`);
-      forceStopFront = true;
-    } else if (value > 40 && forceStopFront) {
-      forceStopFront = false;
-    }
+  ).subscribe(v => {
+    console.log(v);
 
-    throttledEmmitDistance('distance_front', value);
+    // frontDistance = value;
+    // if (value <= 30 && !forceStopFront) {
+    //   car.stop();
+    //   logger.debug(`F D: ${value}`);
+    //   forceStopFront = true;
+    // } else if (value > 40 && forceStopFront) {
+    //   forceStopFront = false;
+    // }
+
+    // throttledEmmitDistance('distance_front', value);
   });
 
   // $distanceRear.pipe(
