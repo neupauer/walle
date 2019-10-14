@@ -121,12 +121,12 @@ io.on('connection', function (socket) {
 
     switch (data) {
       case "UP":
-        if (!forceStopFront) {
+        if (frontDistance > 20 && !forceStopFront) {
           car.forward();
         }
         break;
       case "DOWN":
-        if (!forceStopRear) {
+        if (rearDistance > 20 && !forceStopRear) {
           car.backward();
         }
         break;
