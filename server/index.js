@@ -93,9 +93,9 @@ io.on('connection', function (socket) {
   $distanceFront.pipe(
     bufferCount(4),
     tap(logger.debug),
-    map((values) => _mean(values))
-    tap(logger.debug),
-  ).subscribe((value) => {
+    // map((values) => _mean(values))
+    // tap(logger.debug),
+  ).subscribe(([value, ...rest]) => {
     frontDistance = value;
     if (value <= 30 && !forceStopFront) {
       car.stop();
