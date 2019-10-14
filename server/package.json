@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "i2c-bus": "^5.1.0",

@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "sudo node server/index.js"
+  }
+}

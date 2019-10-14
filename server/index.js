@@ -82,6 +82,7 @@ io.on('connection', function (socket) {
   const emitDistance = (direction, distance) => {
     socket.emit(direction, distance);
   };
+  const throttledEmmitDistance = _throttle(emitDistance, 500);
 
   logger.info('User connected!');
 
@@ -90,8 +91,7 @@ io.on('connection', function (socket) {
     if (value < 25) {
       car.stop();
     }
-
-    _throttle(emitDistance, 500)('distance_front', value);
+    throttledEmmitDistance('distance_front', value);
   });
 
   $distanceRear.pipe(throttleTime(0)).subscribe((value) => {
@@ -99,8 +99,7 @@ io.on('connection', function (socket) {
     if (value < 25) {
       car.stop();
     }
-
-    _throttle(emitDistance, 500)('distance_rear', value);
+    throttledEmmitDistance('distance_rear', value);
   });
 
   $rotation.pipe(throttleTime(500)).subscribe((value) => {
