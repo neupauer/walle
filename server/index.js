@@ -119,9 +119,9 @@ io.on('connection', function (socket) {
     throttledEmmitDistance('distance_rear', value);
   });
 
-  $rotation.pipe(throttleTime(500)).subscribe((value) => {
-    socket.emit('rotation', value);
-  });
+  // $rotation.pipe(throttleTime(500)).subscribe((value) => {
+  //   socket.emit('rotation', value);
+  // });
 
   socket.on('control', function (data) {
     // logger.debug(`Control: ${data}`);

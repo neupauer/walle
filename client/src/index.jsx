@@ -139,7 +139,10 @@ const App = () => {
                 <div className="flex items-center">
                   <Text
                     category="s2"
-                    className={`${rearDistance < 30 ? 'text-red-500' : 'text-indigo-500'} font-mono font-bold w-32 text-center`}
+                    className={`${
+                      rearDistance < 30 ? "text-red-500" : "text-indigo-500"
+                    } font-mono font-bold w-32 text-center`}
+                    sttle={{ "text-align": "center" }}
                   >
                     {rearDistance.toFixed(2)}
                     <span className="text-sm font-normal">cm</span>
@@ -150,7 +153,10 @@ const App = () => {
                   />
                   <Text
                     category="s2"
-                    className={`${frontDistance < 30 ? 'text-red-500' : 'text-indigo-500'} font-mono font-bold w-32 text-center`}
+                    className={`${
+                      frontDistance < 30 ? "text-red-500" : "text-indigo-500"
+                    } font-mono font-bold w-32 text-center`}
+                    sttle={{ "text-align": "center" }}
                   >
                     {frontDistance.toFixed(2)}
                     <span className="text-sm font-normal">cm</span>
