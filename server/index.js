@@ -2,7 +2,8 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const _throttle = require('lodash/throttle');
-const { throttleTime } = require('rxjs/operators');
+const _mean = require('lodash/mean');
+const { throttleTime, bufferCount, map, tap } = require('rxjs/operators');
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf } = format;
 
@@ -51,14 +52,14 @@ let frontDistance = 0;
 const $distanceFront = createStream({
   triggerGPIO: 26,
   echoGPIO: 19,
-  readInterval: 100
+  readInterval: 25
 });
 
 let rearDistance = 0;
 const $distanceRear = createStream({
   triggerGPIO: 17,
   echoGPIO: 27,
-  readInterval: 100
+  readInterval: 25
 });
 
 const $rotation = createRotationStream();
@@ -89,7 +90,12 @@ io.on('connection', function (socket) {
 
   logger.info('User connected!');
 
-  $distanceFront.pipe(throttleTime(0)).subscribe((value) => {
+  $distanceFront.pipe(
+    bufferCount(4),
+    tap(logger.debug),
+    map((values) => _mean(values))
+    tap(logger.debug),
+  ).subscribe((value) => {
     frontDistance = value;
     if (value <= 30 && !forceStopFront) {
       car.stop();
@@ -102,7 +108,10 @@ io.on('connection', function (socket) {
     throttledEmmitDistance('distance_front', value);
   });
 
-  $distanceRear.pipe(throttleTime(0)).subscribe((value) => {
+  $distanceRear.pipe(
+    bufferCount(4),
+    map((values) => _mean(values))
+  ).subscribe((value) => {
     rearDistance = value;
     if (value <= 30 && !forceStopRear) {
       car.stop();
