@@ -3,8 +3,7 @@ const http = require('http');
 const express = require('express');
 const _throttle = require('lodash/throttle');
 const _mean = require('lodash/mean');
-const _sum = require('lodash/sum');
-const { throttleTime, bufferCount, map, tap } = require('rxjs/operators');
+const { throttleTime, bufferCount, map } = require('rxjs/operators');
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf } = format;
 
@@ -93,37 +92,32 @@ io.on('connection', function (socket) {
 
   $distanceFront.pipe(
     bufferCount(4),
-    map(_sum)
-    // tap(logger.debug),
-  ).subscribe(v => {
-    console.log(v);
+    map(_mean)
+  ).subscribe(value => {
+    frontDistance = value;
+    if (value <= 30 && !forceStopFront) {
+      car.stop();
+      forceStopFront = true;
+    } else if (value > 40 && forceStopFront) {
+      forceStopFront = false;
+    }
 
-    // frontDistance = value;
-    // if (value <= 30 && !forceStopFront) {
-    //   car.stop();
-    //   logger.debug(`F D: ${value}`);
-    //   forceStopFront = true;
-    // } else if (value > 40 && forceStopFront) {
-    //   forceStopFront = false;
-    // }
-
-    // throttledEmmitDistance('distance_front', value);
+    throttledEmmitDistance('distance_front', value);
   });
 
-  // $distanceRear.pipe(
-  //   bufferCount(4),
-  //   map((values) => _sum(values))
-  // ).subscribe((value) => {
-  //   rearDistance = value;
-  //   if (value <= 30 && !forceStopRear) {
-  //     car.stop();
-  //     logger.debug(`R D: ${value}`);
-  //     forceStopRear = true;
-  //   } else if (value > 40 && forceStopRear) {
-  //     forceStopRear = false;
-  //   }
-  //   throttledEmmitDistance('distance_rear', value);
-  // });
+  $distanceRear.pipe(
+    bufferCount(4),
+    map(_mean)
+  ).subscribe((value) => {
+    rearDistance = value;
+    if (value <= 30 && !forceStopRear) {
+      car.stop();
+      forceStopRear = true;
+    } else if (value > 40 && forceStopRear) {
+      forceStopRear = false;
+    }
+    throttledEmmitDistance('distance_rear', value);
+  });
 
   $rotation.pipe(throttleTime(500)).subscribe((value) => {
     socket.emit('rotation', value);
