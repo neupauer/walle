@@ -7,15 +7,15 @@ const { throttleTime } = require('rxjs/operators');
 const { createStream } = require('./src/hcsr04');
 const { createRotationStream } = require('./src/mpu6050');
 const { initMotor, initCar } = require('./src/dc_motor');
+
 /**
  * Constants
  */
-const PORT = 8080;
+const PORT = +(process.env.PORT) || 8080;
 
 /**
  * Setup logger
  */
-
 const logFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${level.toUpperCase()}]: ${message}`;
 });
@@ -48,13 +48,15 @@ app.get('/', function (req, res) {
 let frontDistance = 0;
 const $distanceFront = createStream({
   triggerGPIO: 26,
-  echoGPIO: 19
+  echoGPIO: 19,
+  readInterval: 50
 });
 
 let rearDistance = 0;
 const $distanceRear = createStream({
   triggerGPIO: 17,
   echoGPIO: 27,
+  readInterval: 50
 });
 
 const $rotation = createRotationStream();
@@ -77,39 +79,39 @@ const io = require('socket.io')(server);
 io.on('connection', function (socket) {
   logger.info('User connected!');
 
-  $distanceFront.pipe(throttleTime(500)).subscribe((value) => {
+  $distanceFront.pipe(throttleTime(0)).subscribe((value) => {
     frontDistance = value;
-    if(value <= 20) {
-    	car.stop();
+    if (value < 25) {
+      car.stop();
     }
     socket.emit('distance_front', value);
   });
 
-  $distanceRear.pipe(throttleTime(500)).subscribe((value) => {
+  $distanceRear.pipe(throttleTime(0)).subscribe((value) => {
     rearDistance = value;
-    if(value <= 20) {
-        car.stop();
+    if (value < 25) {
+      car.stop();
     }
     socket.emit('distance_rear', value);
   });
 
-//$rotation.pipe(throttleTime(500)).subscribe((value) => {
-  //  socket.emit('rotation', value);
-  //});
+  $rotation.pipe(throttleTime(500)).subscribe((value) => {
+    socket.emit('rotation', value);
+  });
 
   socket.on('control', function (data) {
     logger.debug(`Control: ${data}`);
 
     switch (data) {
       case "UP":
-        if (frontDistance > 20) {
+        if (frontDistance > 30) {
           car.forward();
         } else {
           car.stop();
         }
         break;
       case "DOWN":
-        if (rearDistance > 20) {
+        if (rearDistance > 30) {
           car.backward();
         } else {
           car.stop();
@@ -134,3 +136,13 @@ io.on('connection', function (socket) {
 });
 
 server.listen(PORT, () => logger.info(`App listening on port ${PORT}!`));
+
+process.on('exit', function () {
+  car.stop();
+  car.unexport();
+});
+
+process.on('uncaughtException', function (err) {
+  console.error(err);
+  console.log("Node NOT Exiting...");
+});

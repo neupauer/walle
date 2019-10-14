@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
 
-import _throttle from 'lodash/throttle'
+import _throttle from "lodash/throttle";
 import Icon from "./Icon";
 import Text from "./Components/Text";
 import { socket } from "./SocketContext";
 import ControlButton from "./Components/ControlButton";
 import useKeyPress from "./utils/useKeyPress";
 
-const emitControl = (direction) => {
-  socket.emit("control", direction);
-}
+// Disable arrow key scrolling in users browser
+window.addEventListener(
+  "keydown",
+  function(e) {
+    // space and arrow keys
+    if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+      e.preventDefault();
+    }
+  },
+  false
+);
 
-const throttledEmitControl = _throttle(emitControl, 500);
+const emitControl = direction => {
+  socket.emit("control", direction);
+};
+
+const throttledEmitControl = _throttle(emitControl, 100);
 
 const App = () => {
   const arrowUp = useKeyPress("ArrowUp");
@@ -27,8 +39,8 @@ const App = () => {
 
   useEffect(() => {
     socket.on("rotation", msg => {
-      setXAngle((msg.x - 2.5));
-      setYAngle((msg.y - 6));
+      setXAngle(msg.x - 2.5);
+      setYAngle(msg.y - 6);
     });
 
     socket.on("distance_front", msg => {
@@ -41,15 +53,15 @@ const App = () => {
   }, []);
 
   if (arrowRight) {
-    throttledEmitControl('RIGHT')
+    throttledEmitControl("RIGHT");
   } else if (arrowLeft) {
-    throttledEmitControl('LEFT')
+    throttledEmitControl("LEFT");
   } else if (arrowUp) {
-    throttledEmitControl('UP')
+    throttledEmitControl("UP");
   } else if (arrowDown) {
-    throttledEmitControl("DOWN")
+    throttledEmitControl("DOWN");
   } else {
-    throttledEmitControl("STOP")
+    throttledEmitControl("STOP");
   }
 
   return (
