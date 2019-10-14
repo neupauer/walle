@@ -1,9 +1,11 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
+const _throttle = require('lodash/throttle');
+const { throttleTime } = require('rxjs/operators');
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf } = format;
-const { throttleTime } = require('rxjs/operators');
+
 const { createStream } = require('./src/hcsr04');
 const { createRotationStream } = require('./src/mpu6050');
 const { initMotor, initCar } = require('./src/dc_motor');
@@ -77,6 +79,10 @@ const server = new http.Server(app);
 const io = require('socket.io')(server);
 
 io.on('connection', function (socket) {
+  const emitDistance = (direction, distance) => {
+    socket.emit(direction, distance);
+  };
+
   logger.info('User connected!');
 
   $distanceFront.pipe(throttleTime(0)).subscribe((value) => {
@@ -84,7 +90,8 @@ io.on('connection', function (socket) {
     if (value < 25) {
       car.stop();
     }
-    socket.emit('distance_front', value);
+
+    _throttle(emitDistance, 200)('distance_front', value);
   });
 
   $distanceRear.pipe(throttleTime(0)).subscribe((value) => {
@@ -92,7 +99,8 @@ io.on('connection', function (socket) {
     if (value < 25) {
       car.stop();
     }
-    socket.emit('distance_rear', value);
+
+    _throttle(emitDistance, 200)('distance_rear', value);
   });
 
   $rotation.pipe(throttleTime(500)).subscribe((value) => {
@@ -143,6 +151,5 @@ process.on('exit', function () {
 });
 
 process.on('uncaughtException', function (err) {
-  console.error(err);
-  console.log("Node NOT Exiting...");
+  logger.error(err);
 });
