@@ -51,14 +51,14 @@ let frontDistance = 0;
 const $distanceFront = createStream({
   triggerGPIO: 26,
   echoGPIO: 19,
-  readInterval: 50
+  readInterval: 100
 });
 
 let rearDistance = 0;
 const $distanceRear = createStream({
   triggerGPIO: 17,
   echoGPIO: 27,
-  readInterval: 50
+  readInterval: 100
 });
 
 const $rotation = createRotationStream();
@@ -140,7 +140,7 @@ io.on('connection', function (socket) {
         break;
       case "STOP":
       default:
-        // car.stop();
+        car.stop();
         break;
     }
   });
