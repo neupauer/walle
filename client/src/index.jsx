@@ -39,8 +39,8 @@ const App = () => {
 
   useEffect(() => {
     socket.on("rotation", msg => {
-      setXAngle(msg.x - 2.5);
-      setYAngle(msg.y - 6);
+      setXAngle(msg.x);
+      setYAngle(msg.y);
     });
 
     socket.on("distance_front", msg => {
