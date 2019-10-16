@@ -84,7 +84,7 @@ const App = () => {
                       active={arrowUp || buttonUp}
                       onMouseDown={() => setButtonUp(true)}
                       onMouseUp={() => setButtonUp(false)}
-                      transform="rotate(0)"
+                      up
                     />
                   </div>
                   <div className="w-1/3"></div>
@@ -96,7 +96,7 @@ const App = () => {
                       active={arrowLeft || buttonLeft}
                       onMouseDown={() => setButtonLeft(true)}
                       onMouseUp={() => setButtonLeft(false)}
-                      transform="rotate(-90)"
+                      left
                     />
                   </div>
                   <div className="w-1/3">
@@ -104,7 +104,7 @@ const App = () => {
                       active={arrowDown || buttonDown}
                       onMouseDown={() => setButtonDown(true)}
                       onMouseUp={() => setButtonDown(false)}
-                      transform="rotate(180)"
+                      down
                     />
                   </div>
                   <div className="w-1/3">
@@ -112,7 +112,7 @@ const App = () => {
                       active={arrowRight || buttonRight}
                       onMouseDown={() => setButtonRight(true)}
                       onMouseUp={() => setButtonRight(false)}
-                      transform="rotate(90)"
+                      right
                     />
                   </div>
                 </div>
@@ -167,7 +167,7 @@ const App = () => {
                     className={`${
                       rearDistance < 30 ? "text-red-400" : "text-indigo-500"
                     } font-mono font-bold w-32 text-center`}
-                    style={{ "text-align": "center" }}
+                    style={{ textAlign: "center" }}
                   >
                     {rearDistance.toFixed(2)}
                     <span className="text-sm font-normal">cm</span>
@@ -181,7 +181,7 @@ const App = () => {
                     className={`${
                       frontDistance < 30 ? "text-red-400" : "text-indigo-500"
                     } font-mono font-bold w-32 text-center`}
-                    style={{ "text-align": "center" }}
+                    style={{ textAlign: "center" }}
                   >
                     {frontDistance.toFixed(2)}
                     <span className="text-sm font-normal">cm</span>

@@ -4,7 +4,6 @@ import ArrowUp from "../Icon/ArrowUp";
 
 const ControlButton = ({
   active,
-  transform,
   className = "",
   onMouseUp = () => {},
   onMouseDown = () => {},
@@ -28,7 +27,6 @@ const ControlButton = ({
       )}
     >
       <ArrowUp
-        transform={transform}
         className={`stroke-current ${
           active ? "text-white" : "text-gray-500"
         } h-12 w-12`}
