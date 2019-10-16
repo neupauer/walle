@@ -32,6 +32,11 @@ const App = () => {
   const arrowRight = useKeyPress("ArrowRight");
   const arrowLeft = useKeyPress("ArrowLeft");
 
+  const [buttonUp, setButtonUp] = useState(false);
+  const [buttonDown, setButtonDown] = useState(false);
+  const [buttonLeft, setButtonLeft] = useState(false);
+  const [buttonRight, setButtonRight] = useState(false);
+
   const [xAngle, setXAngle] = useState(0);
   const [yAngle, setYAngle] = useState(0);
   const [frontDistance, setFrontDistance] = useState(0);
@@ -52,13 +57,13 @@ const App = () => {
     });
   }, []);
 
-  if (arrowRight) {
+  if (arrowRight || buttonRight) {
     throttledEmitControl("RIGHT");
-  } else if (arrowLeft) {
+  } else if (arrowLeft || buttonLeft) {
     throttledEmitControl("LEFT");
-  } else if (arrowUp) {
+  } else if (arrowUp || buttonUp) {
     throttledEmitControl("UP");
-  } else if (arrowDown) {
+  } else if (arrowDown || buttonDown) {
     throttledEmitControl("DOWN");
   } else {
     throttledEmitControl("STOP");
@@ -75,20 +80,40 @@ const App = () => {
                 <div className="flex flex-row">
                   <div className="w-1/3"></div>
                   <div className="w-1/3">
-                    <ControlButton active={arrowUp} transform="rotate(0)" />
+                    <ControlButton
+                      active={arrowUp || buttonUp}
+                      onMouseDown={() => setButtonUp(true)}
+                      onMouseUp={() => setButtonUp(false)}
+                      transform="rotate(0)"
+                    />
                   </div>
                   <div className="w-1/3"></div>
                 </div>
 
                 <div className="flex flex-row">
                   <div className="w-1/3">
-                    <ControlButton active={arrowLeft} transform="rotate(-90)" />
+                    <ControlButton
+                      active={arrowLeft || buttonLeft}
+                      onMouseDown={() => setButtonLeft(true)}
+                      onMouseUp={() => setButtonLeft(false)}
+                      transform="rotate(-90)"
+                    />
                   </div>
                   <div className="w-1/3">
-                    <ControlButton active={arrowDown} transform="rotate(180)" />
+                    <ControlButton
+                      active={arrowDown || buttonDown}
+                      onMouseDown={() => setButtonDown(true)}
+                      onMouseUp={() => setButtonDown(false)}
+                      transform="rotate(180)"
+                    />
                   </div>
                   <div className="w-1/3">
-                    <ControlButton active={arrowRight} transform="rotate(90)" />
+                    <ControlButton
+                      active={arrowRight || buttonRight}
+                      onMouseDown={() => setButtonRight(true)}
+                      onMouseUp={() => setButtonRight(false)}
+                      transform="rotate(90)"
+                    />
                   </div>
                 </div>
               </div>
@@ -140,7 +165,7 @@ const App = () => {
                   <Text
                     category="s2"
                     className={`${
-                      rearDistance < 30 ? "text-red-500" : "text-indigo-500"
+                      rearDistance < 30 ? "text-red-400" : "text-indigo-500"
                     } font-mono font-bold w-32 text-center`}
                     style={{ "text-align": "center" }}
                   >
@@ -148,13 +173,13 @@ const App = () => {
                     <span className="text-sm font-normal">cm</span>
                   </Text>
                   <Icon.Car2
-                    className="text-gray-600 h-24 w-24 mx-12"
+                    className="text-gray-600 h-24 w-24 mx-4 md:mx-12"
                     strokeWidth={0.75}
                   />
                   <Text
                     category="s2"
                     className={`${
-                      frontDistance < 30 ? "text-red-500" : "text-indigo-500"
+                      frontDistance < 30 ? "text-red-400" : "text-indigo-500"
                     } font-mono font-bold w-32 text-center`}
                     style={{ "text-align": "center" }}
                   >
