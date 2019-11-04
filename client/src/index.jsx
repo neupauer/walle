@@ -42,6 +42,8 @@ const App = () => {
   const [frontDistance, setFrontDistance] = useState(0);
   const [rearDistance, setRearDistance] = useState(0);
 
+  const [speed, setSpeed] = useState(0);
+
   useEffect(() => {
     socket.on("rotation", msg => {
       setXAngle(msg.x);
@@ -57,7 +59,7 @@ const App = () => {
     });
 
     socket.on("velocity", msg => {
-      console.log("VEL", msg);
+      setSpeed(Math.abs(Number(msg.x)));
     });
   }, []);
 
@@ -152,7 +154,7 @@ const App = () => {
                 className="text-indigo-500 font-mono font-bold w-32 text-center"
                 style={{ textAlign: "center" }}
               >
-                {rearDistance.toFixed(2)}
+                {speed.toFixed(2)}
                 <span className="text-sm font-normal">m/s</span>
               </Text>
             </div>
