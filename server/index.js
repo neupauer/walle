@@ -124,9 +124,9 @@ io.on('connection', function (socket) {
     socket.emit('rotation', value);
   });
 
-  // $velocity.pipe(throttleTime(100)).subscribe((value) => {
-  //   socket.emit('velocity', value);
-  // });
+   $velocity.subscribe((value) => {
+     socket.emit('velocity', value);
+   });
 
   socket.on('control', function (data) {
     // logger.debug(`Control: ${data}`);
