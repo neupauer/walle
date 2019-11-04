@@ -8,7 +8,7 @@ const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf } = format;
 
 const { createStream } = require('./src/hcsr04');
-const { createRotationStream } = require('./src/mpu6050');
+const { createRotationStream, createVelocityStream } = require('./src/mpu6050');
 const { initMotor, initCar } = require('./src/dc_motor');
 
 /**
@@ -64,6 +64,7 @@ const $distanceRear = createStream({
 
 const $rotation = createRotationStream();
 
+const $velocity = createVelocityStream();
 /**
  * Setup car
  */
@@ -119,9 +120,13 @@ io.on('connection', function (socket) {
     throttledEmmitDistance('distance_rear', value);
   });
 
-   $rotation.pipe(throttleTime(500)).subscribe((value) => {
-     socket.emit('rotation', value);
-   });
+  $rotation.pipe(throttleTime(500)).subscribe((value) => {
+    socket.emit('rotation', value);
+  });
+
+  // $velocity.pipe(throttleTime(100)).subscribe((value) => {
+  //   socket.emit('velocity', value);
+  // });
 
   socket.on('control', function (data) {
     // logger.debug(`Control: ${data}`);

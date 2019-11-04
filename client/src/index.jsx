@@ -11,7 +11,7 @@ import useKeyPress from "./utils/useKeyPress";
 // Disable arrow key scrolling in users browser
 window.addEventListener(
   "keydown",
-  function(e) {
+  function (e) {
     // space and arrow keys
     if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
       e.preventDefault();
@@ -54,6 +54,10 @@ const App = () => {
 
     socket.on("distance_rear", msg => {
       setRearDistance(msg);
+    });
+
+    socket.on("velocity", msg => {
+      console.log("VEL", msg);
     });
   }, []);
 
@@ -119,6 +123,15 @@ const App = () => {
               </div>
             </div>
           </div>
+
+          <div className="mt-4">
+            <Text category="c2">Camera</Text>
+            <div className="flex items-center justify-center bg-gray-800 w-full h-64 mt-2 rounded-lg shadow-lg">
+              <Icon.Camera className="text-gray-600 h-32 w-32" />
+              <span>36km/h</span>
+            </div>
+          </div>
+
         </div>
       </div>
       <div className="w-full lg:w-1/2">
@@ -166,7 +179,7 @@ const App = () => {
                     category="s2"
                     className={`${
                       rearDistance < 30 ? "text-red-400" : "text-indigo-500"
-                    } font-mono font-bold w-32 text-center`}
+                      } font-mono font-bold w-32 text-center`}
                     style={{ textAlign: "center" }}
                   >
                     {rearDistance.toFixed(2)}
@@ -180,7 +193,7 @@ const App = () => {
                     category="s2"
                     className={`${
                       frontDistance < 30 ? "text-red-400" : "text-indigo-500"
-                    } font-mono font-bold w-32 text-center`}
+                      } font-mono font-bold w-32 text-center`}
                     style={{ textAlign: "center" }}
                   >
                     {frontDistance.toFixed(2)}
