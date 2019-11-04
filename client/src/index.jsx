@@ -11,7 +11,7 @@ import useKeyPress from "./utils/useKeyPress";
 // Disable arrow key scrolling in users browser
 window.addEventListener(
   "keydown",
-  function (e) {
+  function(e) {
     // space and arrow keys
     if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
       e.preventDefault();
@@ -125,19 +125,44 @@ const App = () => {
           </div>
 
           <div className="mt-4">
-            <Text category="c2">Camera</Text>
-            <div className="flex items-center justify-center bg-gray-800 w-full h-64 mt-2 rounded-lg shadow-lg">
-              <Icon.Camera className="text-gray-600 h-32 w-32" />
-              <span>36km/h</span>
+            <Text category="c2">Speed</Text>
+            <div className="flex items-center justify-center bg-gray-100 w-full h-64 mt-2 rounded-lg shadow-lg">
+              <svg
+                className="stroke-current text-gray-600 h-16 w-16"
+                version="1.1"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-width="1"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20.1317,3.86827c4.49103,4.49103 4.49103,11.7724 0,16.2635c-4.49103,4.49103 -11.7724,4.49103 -16.2635,0c-4.49103,-4.49103 -4.49103,-11.7724 0,-16.2635c4.49103,-4.49103 11.7724,-4.49103 16.2635,0"></path>
+                  <path d="M13.414,13.414l2.05407e-08,-1.98388e-08c-0.794504,0.767357 -2.06064,0.745351 -2.828,-0.0491528c-0.748565,-0.775046 -0.748565,-2.0038 -3.96777e-08,-2.77885c0.781,-0.781 8.132,-5.3 8.132,-5.3c0,0 -4.518,7.347 -5.304,8.128Z"></path>
+                  <path d="M3.5,12h1.5"></path>
+                  <path d="M5.99,5.99l1.06,1.06"></path>
+                  <path d="M12,3.5v1.5"></path>
+                  <path d="M20.5,12h-1.5"></path>
+                  <path d="M20.633,19.6l-4.06265e-07,-2.8036e-07c-2.53452,-1.74905 -5.55411,-2.65846 -8.633,-2.6l8.66663e-07,1.64554e-08c-3.07889,-0.0584594 -6.09848,0.850948 -8.633,2.6"></path>
+                </g>
+              </svg>
+              <Text
+                category="s2"
+                className="text-indigo-500 font-mono font-bold w-32 text-center"
+                style={{ textAlign: "center" }}
+              >
+                {rearDistance.toFixed(2)}
+                <span className="text-sm font-normal">m/s</span>
+              </Text>
             </div>
           </div>
-
         </div>
       </div>
       <div className="w-full lg:w-1/2">
         <div className="px-4">
           <div className="mt-4">
-            <Text category="c2">Sensors</Text>
+            <Text category="c2">Rotation Sensors</Text>
             <div className="flex justify-around bg-gray-100 w-full h-64 mt-2 rounded-lg shadow-lg">
               <div className=" flex flex-col items-center justify-center">
                 <Text category="c1">Roll</Text>
@@ -171,34 +196,37 @@ const App = () => {
               </div>
             </div>
 
-            <div className="flex justify-around bg-gray-100 w-full h-64 mt-6 rounded-lg shadow-lg">
-              <div className="flex flex-col items-center justify-center">
-                <Text category="c1">Distance</Text>
-                <div className="flex items-center">
-                  <Text
-                    category="s2"
-                    className={`${
-                      rearDistance < 30 ? "text-red-400" : "text-indigo-500"
+            <div className="mt-4">
+              <Text category="c2">Distance Sensors</Text>
+              <div className="flex justify-around bg-gray-100 w-full h-64 mt-2 rounded-lg shadow-lg">
+                <div className="flex flex-col items-center justify-center">
+                  <Text category="c1">Distance</Text>
+                  <div className="flex items-center">
+                    <Text
+                      category="s2"
+                      className={`${
+                        rearDistance < 30 ? "text-red-400" : "text-indigo-500"
                       } font-mono font-bold w-32 text-center`}
-                    style={{ textAlign: "center" }}
-                  >
-                    {rearDistance.toFixed(2)}
-                    <span className="text-sm font-normal">cm</span>
-                  </Text>
-                  <Icon.Car2
-                    className="text-gray-600 h-24 w-24 mx-4 md:mx-12"
-                    strokeWidth={0.75}
-                  />
-                  <Text
-                    category="s2"
-                    className={`${
-                      frontDistance < 30 ? "text-red-400" : "text-indigo-500"
+                      style={{ textAlign: "center" }}
+                    >
+                      {rearDistance.toFixed(2)}
+                      <span className="text-sm font-normal">cm</span>
+                    </Text>
+                    <Icon.Car2
+                      className="text-gray-600 h-24 w-24 mx-4 md:mx-12"
+                      strokeWidth={0.75}
+                    />
+                    <Text
+                      category="s2"
+                      className={`${
+                        frontDistance < 30 ? "text-red-400" : "text-indigo-500"
                       } font-mono font-bold w-32 text-center`}
-                    style={{ textAlign: "center" }}
-                  >
-                    {frontDistance.toFixed(2)}
-                    <span className="text-sm font-normal">cm</span>
-                  </Text>
+                      style={{ textAlign: "center" }}
+                    >
+                      {frontDistance.toFixed(2)}
+                      <span className="text-sm font-normal">cm</span>
+                    </Text>
+                  </div>
                 </div>
               </div>
             </div>
